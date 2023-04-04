@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 
 import Card from "../UI/Card";
 import Button from "../UI/Button";
@@ -7,13 +7,20 @@ import classes from "./AddUser.module.css";
 import Wrapper from "../Helpers/Wrapper";
 
 const AddUser = (props) => {
+  const collegeNameInputRef = useRef();
   const [enteredUsername, setEnteredUsername] = useState("");
   const [enteredAge, setEnteredAge] = useState("");
+
   const [error, setError] = useState();
 
   const addUserHandler = (event) => {
     event.preventDefault();
-    if (enteredUsername.trim().length === 0 || enteredAge.trim().length === 0) {
+    const enteredCollegeName = collegeNameInputRef.current.value;
+    if (
+      enteredUsername.trim().length === 0 ||
+      enteredAge.trim().length === 0 ||
+      enteredCollegeName.trim().length === 0
+    ) {
       setError({
         title: "Invalid input",
         message: "Please enter a valid name and age (non-empty values).",
@@ -27,9 +34,10 @@ const AddUser = (props) => {
       });
       return;
     }
-    props.onAddUser(enteredUsername, enteredAge);
+    props.onAddUser(enteredUsername, enteredAge, enteredCollegeName);
     setEnteredUsername("");
     setEnteredAge("");
+    collegeNameInputRef.current.value = "";
   };
 
   const usernameChangeHandler = (event) => {
@@ -69,6 +77,8 @@ const AddUser = (props) => {
             value={enteredAge}
             onChange={ageChangeHandler}
           />
+          <label htmlFor="collegeName">College Name</label>
+          <input id="collegeName" type="text" ref={collegeNameInputRef} />
           <Button type="submit">Add User</Button>
         </form>
       </Card>
